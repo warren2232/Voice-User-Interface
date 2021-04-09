@@ -37,12 +37,26 @@ function showchatbotmsg(chatbotmsg){  //5
 }
 let launch_enable; 
 let entertainment_enable;
-
+let ContactNotif=false;
+let LaunchNotif=false;
+let EntertainmentNotif=false; 
 function chatbotvoice(message){
 
      
     const speech = new SpeechSynthesisUtterance();
-    speech.text = 'Invalid command, please use the commandd "info" to show all available commands"';
+    speech.text = 'Invalid command, please use the commandd "help" to show all available commands"';
+    if(message.includes('back')){
+        let finalresult = "Toggle night mode";
+        speech.text = finalresult;
+    }
+    if(message.includes('back')){
+        let finalresult = "Returning you back";
+        speech.text = finalresult;
+    }
+    if(message.includes('help')){
+        let finalresult = "Please have a look at some guidelines on how to use the system";
+        speech.text = finalresult;
+    }
     if(message.includes('who are you')){
         let finalresult = intro[Math.floor(Math.random() * intro.length)];
         speech.text = finalresult;
@@ -51,9 +65,9 @@ function chatbotvoice(message){
         let finalresult = help[Math.floor(Math.random() * help.length)];
         speech.text = finalresult;
     }
-    if(message.includes('info')){
-        let finalresult = greetings[Math.floor(Math.random() * greetings.length)];
-        speech.text = finalresult;
+    if(message.includes('help')){
+       
+       
         $('#exampleModal').modal('show');
     }
    
@@ -72,28 +86,48 @@ function chatbotvoice(message){
       Dark_Mode();
       document.querySelector('.menu').innerHTML='';
     }
-    if(message.includes('contact')){
+    if(message.includes('contact') || ContactNotif){
        
-     ContactUs();
-     speech.text='Contact us command selected, you can find us through our social media accounts';
+
+        ContactNotif=true;
+       
+       
+        if(message.includes('back')){
+         ContactNotif=false;
+         
+         
+         HideDiv("ContactUs");
+        
+         showwelcomemessage();
+         console.log("1");
+     }else{
+         document.getElementById("welcome").style.display="none";
+         speech.text='Contact us command selected, you can find us through our social media accounts';
+         ContactUs();
+     
+     }
+     
     }
     switch (message) {
         case 'YouTube':
-       
+        document.getElementById("services").style.display="none";
         Loading_Animatio('Loading to YouTube');
       
         speech.text='LaunchTech Youtube Account Selected, we will redirect you to our page in a moment';
         window.setTimeout(function() {
             
             // Redirect to a new specified location based on command
-            WindowUrl("https://www.youtube.com");
+            WindowUrl("https://www.youtube.com/channel/UCx-dhOlfwh7Uqx63fU4_6qw");
             document.querySelector('.loading_animation').innerHTML='';
+            document.getElementById("services").style.display="none";
+            document.querySelector('.ContactUs').innerHTML='';
         }
         , 5000);
         
      
         break;
         case 'Facebook':
+        document.getElementById("services").style.display="none";
         speech.text='LaunchTech Facebook Account Selected, we will redirect you to our page in a moment';
 
        
@@ -104,6 +138,10 @@ function chatbotvoice(message){
             
             // Redirect to a new specified location based on command
             WindowUrl("https://www.facebook.com/launchtech.dev");
+            document.querySelector('.loading_animation').innerHTML='';
+            document.getElementById("services").style.display="none";
+            document.querySelector('.ContactUs').innerHTML='';
+            
         }
         , 5000);
         
@@ -112,7 +150,7 @@ function chatbotvoice(message){
         break;
         case 'website':
         
-
+        document.getElementById("services").style.display="none";
 
 
         console.log("1");
@@ -123,12 +161,15 @@ function chatbotvoice(message){
             
             // Redirect to a new specified location based on command
             WindowUrl("https://launchtech.dev/");
+            document.querySelector('.loading_animation').innerHTML='';
+            document.getElementById("services").style.display="none";
+            document.querySelector('.ContactUs').innerHTML='';
         }
         , 5000);
         break;
         case 'Instagram':
         
-
+        document.getElementById("services").style.display="none";
         speech.text='LaunchTech Instagram Account Selected, we will redirect you to our page in a moment';
         console.log("1");
         Loading_Animatio('Loading to LaunchTech Instagram');
@@ -138,19 +179,24 @@ function chatbotvoice(message){
             
             // Redirect to a new specified location based on command
             WindowUrl("https://www.instagram.com/launchtech.dev/"); 
+            document.querySelector('.loading_animation').innerHTML='';
+            document.getElementById("services").style.display="none";
+            document.querySelector('.ContactUs').innerHTML='';
         }
         , 5000);
         break;
-        case 'back':
-        HideDiv("response");
+        /* case 'back':
+        HideDiv("response"); */
     }
     if(message.includes('entertainment') || entertainment_enable){
         entertainment_enable=true;
+       
+       
        if(message.includes('back')){
         entertainment_enable=false;
         
         
-        // HideDiv("Entertainment_Events");
+        HideDiv("Entertainment_Events");
         speech.text='Please have a look at our entertainment events'
         showwelcomemessage();
         console.log("1");
@@ -163,6 +209,9 @@ function chatbotvoice(message){
     // console.log(message.includes('launch') || launch_enable);
     
     if(message.includes('launch') || launch_enable){
+        
+        let LaunchNotif=true;   
+
         launch_enable=true;
         if(message.includes('back')){
             launch_enable=false;
@@ -214,7 +263,7 @@ mic.addEventListener("click", function(){
 
 function welcome(){
     const speec = new SpeechSynthesisUtterance('no warning should arise');
-    speec.text = 'Welcome to lauchtech support assistant system, please use the command info anywhere in the system to see available commands';
+    speec.text = 'Welcome to lauchtech support assistant system, please use the command help anywhere in the system to see available commands';
     window.speechSynthesis.speak(speec);
     
     showwelcomemessage();
@@ -474,7 +523,7 @@ function ShowEntertainmentEvents(){
     
     
     }
-    output += '<p>We are a team of 8 executives aiming to make the university lifes of students better</p>'
+    output += '<p>Have a look at events organised by launchTech</p>'
     output +='<button id="Back_Entertainment" onclick=HideDiv("Entertainment_Events")>Back</button>'
     output +=' </div>'
     Entertainment_Events.innerHTML += output;
